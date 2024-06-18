@@ -1,0 +1,11 @@
+{
+  "imap_server": "mail.gandi.net",
+  "imap_port": 587,
+  "smtp_server": "mail.gandi.net",
+  "smtp_port": 465,
+  "username": "dispatch@astrosynapse.com",
+  "password": "asai1234",
+  "encryption": "ssltls",
+  "sender": "dispatch@astrosynapse.com",
+  "reply_to": "info@astrosynapse.ai"
+}
