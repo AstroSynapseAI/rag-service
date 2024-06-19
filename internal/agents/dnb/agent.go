@@ -69,7 +69,7 @@ func NewDNBAgent(options ...DNBAgentOptions) (*DNBAgent, error) {
 		agents.WithMaxIterations(5),
 	)
 
-	dnbAgent.Executor = agents.NewExecutor(agent, dnbAgent.Tools)
+	dnbAgent.Executor = agents.NewExecutor(agent)
 
 	return dnbAgent, nil
 }

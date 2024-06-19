@@ -17,7 +17,6 @@ import (
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/prompts"
-	"github.com/tmc/langchaingo/schema"
 	"github.com/tmc/langchaingo/tools"
 )
 
@@ -65,9 +64,9 @@ func (chain *AsaiChain) SetClientType(clientType string) {
 	chain.ClientType = clientType
 }
 
-func (chain *AsaiChain) LoadHistory() []schema.ChatMessage {
-	return chain.Memory.Messages()
-}
+// func (chain *AsaiChain) LoadHistory() []schema.ChatMessage {
+// 	return chain.Memory.Messages()
+// }
 
 func (chain *AsaiChain) Prompt(ctx context.Context, input string) (string, error) {
 	asaiAgent := agents.NewConversationalAgent(
@@ -77,7 +76,6 @@ func (chain *AsaiChain) Prompt(ctx context.Context, input string) (string, error
 
 	executor := agents.NewExecutor(
 		asaiAgent,
-		chain.Agents,
 		agents.WithMemory(chain.Memory.Buffer()),
 	)
 
@@ -107,7 +105,6 @@ func (chain *AsaiChain) Run(ctx context.Context, input string, options ...chains
 
 	executor := agents.NewExecutor(
 		asaiAgent,
-		chain.Agents,
 		agents.WithMemory(chain.Memory.Buffer()),
 		agents.WithCallbacksHandler(agentCallback),
 	)

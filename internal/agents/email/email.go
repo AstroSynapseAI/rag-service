@@ -8,7 +8,6 @@ import (
 	"github.com/AstroSynapseAI/rag-service/internal/tools/email"
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/llms"
-	"github.com/tmc/langchaingo/schema"
 	"github.com/tmc/langchaingo/tools"
 	"github.com/xhit/go-simple-mail/v2"
 )
@@ -90,8 +89,8 @@ func (emailAgent *EmailAgent) Call(ctx context.Context, input string) (string, e
 	fmt.Println(input)
 
 	msg := []llms.MessageContent{
-		llms.TextParts(schema.ChatMessageTypeSystem, emailAgent.Primer),
-		llms.TextParts(schema.ChatMessageTypeHuman, input),
+		llms.TextParts(llms.ChatMessageTypeSystem, emailAgent.Primer),
+		llms.TextParts(llms.ChatMessageTypeHuman, input),
 	}
 
 	response, err := emailAgent.LLM.GenerateContent(ctx, msg)

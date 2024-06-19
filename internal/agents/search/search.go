@@ -101,7 +101,7 @@ func NewSearchAgent(options ...SearchAgentOptions) (*SearchAgent, error) {
 	)
 
 	// create agents executor chain
-	searchAgent.Executor = agents.NewExecutor(agent, searchTools)
+	searchAgent.Executor = agents.NewExecutor(agent)
 
 	return searchAgent, nil
 }

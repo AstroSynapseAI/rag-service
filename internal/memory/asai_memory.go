@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/AstroSynapseAI/rag-service/internal"
+	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/memory"
 	"github.com/tmc/langchaingo/schema"
 )
@@ -61,7 +62,7 @@ func (m *AsaiMemory) Buffer() schema.Memory {
 	return m.buffer
 }
 
-func (m *AsaiMemory) Messages() []schema.ChatMessage {
+func (m *AsaiMemory) Messages() []llms.ChatMessage {
 	msgs, err := m.chatHistory.Messages(context.Background())
 	if err != nil {
 		fmt.Println(err)

@@ -73,12 +73,7 @@ func (tool PDFTool) Call(ctx context.Context, input string) (string, error) {
 	embedder, err := embeddings.NewEmbedder(llm)
 
 	store, err := pinecone.New(
-		ctx,
 		pinecone.WithNameSpace(uuid.New().String()),
-		pinecone.WithProjectName("fd4e2b9"),
-		pinecone.WithAPIKey("65ae7457-8f3d-4b23-a54e-d19b827ab218"),
-		pinecone.WithEnvironment("us-west1-gcp-free"),
-		pinecone.WithIndexName("reading-test"),
 		pinecone.WithEmbedder(embedder),
 	)
 
