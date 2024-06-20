@@ -10,10 +10,10 @@ import (
 
 	"github.com/AstroSynapseAI/app-service/models"
 	"github.com/AstroSynapseAI/app-service/repositories"
-	"github.com/AstroSynapseAI/app-service/sdk/crud/database"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/dnb/api"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/dnb/search"
 	util "github.com/AstroSynapseAI/rag-service/internal/tools"
+	"github.com/GoLangWebSDK/crud/database"
 	"github.com/struki84/dnbclient"
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
