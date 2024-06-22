@@ -20,11 +20,11 @@ cloud.google.com/go/vertexai v0.10.0 h1:k157bLrtyajGtAAZnqdEn8lwFlUTG3BgHc7kvWbP
 cloud.google.com/go/vertexai v0.10.0/go.mod h1:w/Zb22QvOVvxx5CGM4fPzH3WA6gwUkId9juA7pigzFI=
 github.com/AssemblyAI/assemblyai-go-sdk v1.3.0 h1:AtOVgGxUycvK4P4ypP+1ZupecvFgnfH+Jsum0o5ILoU=
 github.com/AssemblyAI/assemblyai-go-sdk v1.3.0/go.mod h1:H0naZbvpIW49cDA5ZZ/gggeXqi7ojSGB1mqshRk6kNE=
-github.com/AstroSynapseAI/app-service v0.1.0 h1:eQFEDB9Gvy3H1DrK7c/YJ30ThjvF1BwpR2L64vaGxXY=
-github.com/AstroSynapseAI/app-service v0.1.0/go.mod h1:Nutm74YBLqX8LIa0m/XCzB52MAyDtVd3S4djhAJPlAI=
+github.com/AstroSynapseAI/asai-service v0.0.0-20240622123930-75bc9a2d2ba8 h1:c1LTP0WL0VVLeBFBJfVgwWXUIoH1ER8I7Af8RlZQDEQ=
+github.com/AstroSynapseAI/asai-service v0.0.0-20240622123930-75bc9a2d2ba8/go.mod h1:ywLawB3NmolHtAAMWzWO07ttg2zUYpd9T11wTSIjyQ8=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/GoLangWebSDK/crud v0.0.0-20231221021800-f382b7b837ff h1:seOeJiu4rA2N29eHTgJmCiBOT3MchOcnWmdY+M8X3Ik=
-github.com/GoLangWebSDK/crud v0.0.0-20231221021800-f382b7b837ff/go.mod h1:nicnNwEJPgzzXwEyZBBXx+wanvgdSCg97c3UU4z/Q6U=
+github.com/GoLangWebSDK/crud v0.0.0-20240620121149-1055a55efd25 h1:HVeCRbl9K8cFO3CT/LGKNthWmPO7B5zUlM62flYYtBk=
+github.com/GoLangWebSDK/crud v0.0.0-20240620121149-1055a55efd25/go.mod h1:nicnNwEJPgzzXwEyZBBXx+wanvgdSCg97c3UU4z/Q6U=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.2.0 h1:3MEsd0SM6jqZojhjLWWeBY+Kcjy9i6MQAeY7YgDP83g=

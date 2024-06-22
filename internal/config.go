@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/AstroSynapseAI/app-service/models"
-	"github.com/AstroSynapseAI/app-service/repositories"
+	"github.com/AstroSynapseAI/asai-service/models"
+	"github.com/AstroSynapseAI/asai-service/repositories"
 	"github.com/AstroSynapseAI/rag-service/internal/agents"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/dnb"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/email"

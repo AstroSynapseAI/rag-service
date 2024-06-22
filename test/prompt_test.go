@@ -36,3 +36,8 @@ func TestMain(m *testing.M) {
 	code := m.Run()
 	os.Exit(code)
 }
+
+func TestPrompt(t *testing.T) {
+
+	// TODO: Implement
+}

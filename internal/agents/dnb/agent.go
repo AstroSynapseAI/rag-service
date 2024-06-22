@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/AstroSynapseAI/app-service/models"
-	"github.com/AstroSynapseAI/app-service/repositories"
+	"github.com/AstroSynapseAI/asai-service/models"
+	"github.com/AstroSynapseAI/asai-service/repositories"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/dnb/api"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/dnb/search"
 	util "github.com/AstroSynapseAI/rag-service/internal/tools"

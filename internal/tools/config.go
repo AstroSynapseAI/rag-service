@@ -1,7 +1,7 @@
 package tools
 
 import (
-	"github.com/AstroSynapseAI/app-service/models"
+	"github.com/AstroSynapseAI/asai-service/models"
 )
 
 type ToolConfig interface {

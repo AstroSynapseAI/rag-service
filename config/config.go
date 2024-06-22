@@ -100,5 +100,10 @@ func (cnf *Config) RunServer() error {
 	wsManager := ws.NewManager(cnf.DB)
 	router.HandleFunc("/ws/chat", wsManager.Handler)
 
-	return http.ListenAndServe(":8080", router)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081"
+	}
+
+	return http.ListenAndServe(":"+port, router)
 }

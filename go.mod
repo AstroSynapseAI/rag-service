@@ -3,8 +3,8 @@ module github.com/AstroSynapseAI/rag-service
 go 1.22.0
 
 require (
-	github.com/AstroSynapseAI/app-service v0.1.0
-	github.com/GoLangWebSDK/crud v0.0.0-20231221021800-f382b7b837ff
+	github.com/AstroSynapseAI/asai-service v0.0.0-20240622123930-75bc9a2d2ba8
+	github.com/GoLangWebSDK/crud v0.0.0-20240620121149-1055a55efd25
 	github.com/gocolly/colly v1.2.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
@@ -33,6 +33,7 @@ require (
 	github.com/gage-technologies/mistral-go v1.0.0 // indirect
 	github.com/go-gormigrate/gormigrate/v2 v2.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
+	github.com/go-test/deep v1.1.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect

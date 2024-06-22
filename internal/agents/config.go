@@ -2,7 +2,7 @@ package agents
 
 import (
 	"fmt"
-	"github.com/AstroSynapseAI/app-service/models"
+	"github.com/AstroSynapseAI/asai-service/models"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/openai"
 )

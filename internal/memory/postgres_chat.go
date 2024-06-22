@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/AstroSynapseAI/app-service/models"
+	"github.com/AstroSynapseAI/asai-service/models"
 	"github.com/AstroSynapseAI/rag-service/internal"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/schema"
