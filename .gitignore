@@ -1,0 +1,12 @@
+
+.DS_store
+keys.yaml
+tmp/
+.vscode/
+api-requests.http
+.air.toml
+
+node_modules
+yarn.lock
+package.json
+config.json
