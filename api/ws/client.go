@@ -64,6 +64,7 @@ func (client *Client) MaintainConnection(ctx context.Context) {
 func (client *Client) PongHandler(pongMsg string) error {
 	// Current time + Pong Wait time
 
+	// fmt.Println("Pong!")
 	err := client.connection.SetReadDeadline(time.Now().Add(pongWait))
 	if err != nil {
 		fmt.Println("Failed to set read deadline in pong handler:", err)
