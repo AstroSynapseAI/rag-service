@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/GoLangWebSDK/crud/database"
@@ -31,6 +32,20 @@ func NewManager(db *database.Database) *Manager {
 }
 
 func (m *Manager) Handler(w http.ResponseWriter, r *http.Request) {
+	if os.Getenv("ENVIRONMENT") == "LOCAL DEV" {
+		allowed := []string{"http://localhost:5173", "http://localhost:5174"}
+
+		websocketUpgrader.CheckOrigin = func(r *http.Request) bool {
+			for _, v := range allowed {
+				if r.Header.Get("Origin") == v {
+					return true
+				}
+			}
+
+			return false
+		}
+	}
+
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("Failed to initate socket:", err)
@@ -42,7 +57,7 @@ func (m *Manager) Handler(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
 
-	go client.MaintainConnection(ctx)
+	// go client.MaintainConnection(ctx)
 	go client.ReadMsgs(ctx)
 	go client.SendMsgs(ctx)
 }
