@@ -11,6 +11,6 @@ COPY . .
 
 ENV GOFLAGS=-buildvcs=false
 
-RUN go build -o /app/main ./cmd/rag-service/main.go
+RUN go build -o /app/main .
 
 CMD ["/app/main"]

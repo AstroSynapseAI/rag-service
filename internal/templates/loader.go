@@ -6,7 +6,7 @@ import (
 )
 
 func Load(name string) (string, error) {
-	path := "./engine/templates/" + name
+	path := "./internal/templates/" + name
 
 	tmplContent, err := os.ReadFile(path)
 	if err != nil {

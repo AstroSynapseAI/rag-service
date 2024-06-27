@@ -3,7 +3,6 @@ package memory
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/AstroSynapseAI/asai-service/models"
 	"github.com/AstroSynapseAI/rag-service/internal"
@@ -32,11 +31,11 @@ func NewPersistentChatHistory(config internal.AvatarConfig) *PersistentChatHisto
 	history := &PersistentChatHistory{}
 	history.db = config.GetDB().Adapter.Gorm()
 
-	err := history.db.AutoMigrate(models.ChatHistory{})
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
+	// err := history.db.AutoMigrate(models.ChatHistory{})
+	// if err != nil {
+	// 	fmt.Println("Can't migrate chat history", err)
+	// 	return nil
+	// }
 
 	return history
 }
