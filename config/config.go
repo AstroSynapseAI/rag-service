@@ -100,6 +100,11 @@ func (cnf *Config) RunServer() error {
 	wsManager := ws.NewManager(cnf.DB)
 	router.HandleFunc("/ws/chat", wsManager.Handler)
 
+	// Health check
+	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
