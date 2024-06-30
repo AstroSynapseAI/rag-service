@@ -40,8 +40,6 @@ func NewClient(conn *websocket.Conn, manager *Manager) *Client {
 func (client *Client) MaintainConnection(ctx context.Context) {
 	ticker := time.NewTicker(pingInterval)
 
-	// Configure Wait time for Pong response, use Current time + pongWait
-	// This has to be done here to set the first initial timer.
 	if err := client.connection.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		log.Println("Failed to set read deadline:", err)
 		return
