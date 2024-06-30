@@ -31,9 +31,13 @@ func NewManager(db *database.Database) *Manager {
 }
 
 func (m *Manager) Handler(w http.ResponseWriter, r *http.Request) {
+	websocketUpgrader.CheckOrigin = func(r *http.Request) bool {
+		return true
+	}
+
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
-		fmt.Println("Failed to initate socket:", err)
+		fmt.Println("Failed to initate RAG socket:", err)
 		return
 	}
 
