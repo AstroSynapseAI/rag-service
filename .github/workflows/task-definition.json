@@ -2,14 +2,14 @@
   "family": "${ECS_TASK_FAMILY}",
   "containerDefinitions": [
     {
-      "name": "${CONTAINER_NAME}",
-      "image": "${ECR_URL}/asai:latest",
+      "name": "${APP_CONTAINER_NAME}",
+      "image": "${ECR_URL}/${ECR_APP_REPOSITORY}:latest",
       "cpu": 1024,
       "memory": 2048,
       "memoryReservation": 2048,
       "portMappings": [
         {
-          "name": "asai-app-80-tcp",
+          "name": "main-port",
           "containerPort": 80,
           "hostPort": 80,
           "protocol": "tcp",
@@ -62,14 +62,14 @@
       }
     },
     {
-      "name": "asai-rag",
-      "image": "${ECR_URL}/rag:latest",
+      "name": "${CONTAINER_NAME}",
+      "image": "${ECR_URL}/${ECR_REPOSITORY}:latest",
       "cpu": 1024,
       "memory": 2048,
       "memoryReservation": 2048,
       "portMappings": [
         {
-          "name": "asai-rag-8080-tcp",
+          "name": "chat-port",
           "containerPort": 8080,
           "hostPort": 8080,
           "protocol": "tcp",
