@@ -55,6 +55,7 @@ jobs:
     - name: Update task definition
       run: |
         jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/rag:${{ github.sha }}" |
+        .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/asai:latest" |
         .containerDefinitions[].environment = [
           {"name": "RDS_HOST", "value": "${{ secrets.RDS_HOST }}"},
           {"name": "RDS_DBNAME", "value": "${{ secrets.RDS_DBNAME }}"},
