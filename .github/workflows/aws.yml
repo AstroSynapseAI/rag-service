@@ -41,21 +41,13 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
         
-    - name: Create task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ secrets.CONTAINER_NAME }}
-        image: ${{ secrets.ECR_URL }}/${{ env.ECR_REPOSITORY }}:latest          
-          
     - name: Configure task definition
-      id: config-task-def
+      id: task-def
       run: |
-        jq ' .containerDefinitions[0].name = "${{ secrets.APP_CONTAINER_NAME }}" |
+        jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/${{ secrets.ECR_REPOSITORY }}:latest" |
+        .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/${{ secrets.ECR_APP_REPOSITORY }}:latest" |
+        .containerDefinitions[0].name = "${{ secrets.APP_CONTAINER_NAME }}" |
         .containerDefinitions[1].name = "${{ secrets.CONTAINER_NAME }}" |
-        .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/${{ env.ECR_APP_REPOSITORY }}:latest" |
-        .containerDefinitions[1].image = "${{ secrets.ECR_URL }}/${{ env.ECR_REPOSITORY }}:latest" |
         .containerDefinitions[0].environment += [{"name": "PORT", "value": "80"}] |
         .containerDefinitions[1].environment += [{"name": "PORT", "value": "8080"}] |
         .containerDefinitions[].environment += [
@@ -70,7 +62,8 @@ jobs:
         .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ secrets.ECS_TASK_FAMILY }}" |
         .containerDefinitions[].logConfiguration.options."awslogs-region" = "${{ secrets.AWS_REGION }}" |
         .taskRoleArn = "${{ secrets.TASK_ROLE_ARN }}" |
-        .executionRoleArn = "${{ secrets.TASK_ROLE_ARN }}"' ${{ steps.task-def.outputs.task-definition }} > temp.json && mv temp.json ${{ steps.task-def.outputs.task-definition }}
+        .executionRoleArn = "${{ secrets.TASK_ROLE_ARN }}"' ${{ env.ECS_TASK_DEFINITION }} > updated-task-def.json
+        echo "task-definition=updated-task-def.json" >> $GITHUB_OUTPUT
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
