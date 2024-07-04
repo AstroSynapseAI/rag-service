@@ -62,8 +62,7 @@ jobs:
           {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"},
           {"name": "AWS_REGION", "value": "${{ secrets.AWS_REGION }}"},
           {"name": "ECR_URL", "value": "${{ secrets.ECR_URL }}"},
-          {"name": "ECS_CLUSTER", "value": "${{ secrets.ECS_CLUSTER }}"},
-          
+          {"name": "ECS_CLUSTER", "value": "${{ secrets.ECS_CLUSTER }}"}
         ]' ${{ steps.task-def.outputs.task-definition }} > ${{ steps.task-def.outputs.task-definition }}
 
     - name: Deploy Amazon ECS task definition
