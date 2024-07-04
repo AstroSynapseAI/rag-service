@@ -48,10 +48,10 @@ jobs:
         task-definition: ${{ env.ECS_TASK_DEFINITION }}
         container-name: asai-app
         image: ${{ secrets.ECR_URL }}/asai:${{ github.sha }}
-          
-    # - name: Verify task definition file
-    #   run: cat ${{ steps.task-def.outputs.task-definition }}
         
+    - name: Extract task family name
+      run: echo "TASK_FAMILY=$(jq -r '.family' ${{ env.ECS_TASK_DEFINITION }})" >> $GITHUB_ENV
+
     - name: Update task definition
       run: |
         jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/rag:${{ github.sha }}" |
@@ -61,13 +61,10 @@ jobs:
           {"name": "RDS_USERNAME", "value": "${{ secrets.RDS_USERNAME }}"},
           {"name": "RDS_PASSWORD", "value": "${{ secrets.RDS_PASSWORD }}"},
           {"name": "RDS_PORT", "value": "${{ secrets.RDS_PORT }}"},
-          {"name": "TASK_ROLE_ARN", "value": "${{ secrets.TASK_ROLE_ARN }}"},
+          {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"}
           {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"},
-          {"name": "AWS_REGION", "value": "${{ secrets.AWS_REGION }}"},
-          {"name": "ECR_URL", "value": "${{ secrets.ECR_URL }}"},
-          {"name": "ECS_CLUSTER", "value": "${{ secrets.ECS_CLUSTER }}"}
         ] |
-        .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs${{ secrets.ECS_CLUSTER }}${{ secrets.ECS_SERVICE }}" |
+        .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ env.TASK_FAMILY }}" |
         .containerDefinitions[].logConfiguration.options."awslogs-region" = "${{ secrets.AWS_REGION }}" |
         .taskRoleArn = "${{ secrets.TASK_ROLE_ARN }}" |
         .executionRoleArn = "${{ secrets.TASK_ROLE_ARN }}"' ${{ steps.task-def.outputs.task-definition }} > temp.json && mv temp.json ${{ steps.task-def.outputs.task-definition }}
