@@ -61,7 +61,7 @@ jobs:
           {"name": "RDS_USERNAME", "value": "${{ secrets.RDS_USERNAME }}"},
           {"name": "RDS_PASSWORD", "value": "${{ secrets.RDS_PASSWORD }}"},
           {"name": "RDS_PORT", "value": "${{ secrets.RDS_PORT }}"},
-          {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"}
+          {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"},
           {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"}
         ] |
         .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ env.TASK_FAMILY }}" |
