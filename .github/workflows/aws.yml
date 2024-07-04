@@ -48,7 +48,10 @@ jobs:
         task-definition: ${{ env.ECS_TASK_DEFINITION }}
         container-name: asai-app
         image: ${{ secrets.ECR_URL }}/asai:${{ github.sha }}
-
+          
+    - name: Verify task definition file
+      run: cat ${{ steps.task-def.outputs.task-definition }}
+        
     - name: Update task definition
       run: |
         jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/rag:${{ github.sha }}" |
@@ -63,7 +66,8 @@ jobs:
           {"name": "AWS_REGION", "value": "${{ secrets.AWS_REGION }}"},
           {"name": "ECR_URL", "value": "${{ secrets.ECR_URL }}"},
           {"name": "ECS_CLUSTER", "value": "${{ secrets.ECS_CLUSTER }}"}
-        ]' ${{ steps.task-def.outputs.task-definition }} > ${{ steps.task-def.outputs.task-definition }}
+        ]' ${{ steps.task-def.outputs.task-definition }} > temp.json && mv temp.json ${{ steps.task-def.outputs.task-definition }}
+        cat ${{ steps.task-def.outputs.task-definition }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
