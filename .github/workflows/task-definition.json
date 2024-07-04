@@ -1,0 +1,88 @@
+{
+  "family": "BuildAsaiDev",
+  "containerDefinitions": [
+    {
+      "name": "asai-app",
+      "image": "${ECR_URL}/asai:latest",
+      "cpu": 1024,
+      "memory": 2048,
+      "memoryReservation": 2048,
+      "portMappings": [
+        {
+          "name": "asai-app-80-tcp",
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {"name": "RDS_HOST", "value": "${RDS_HOST}"},
+        {"name": "RDS_DBNAME", "value": "${RDS_DBNAME}"},
+        {"name": "RDS_PASSWORD", "value": "${RDS_PASSWORD}"},
+        {"name": "PORT", "value": "80"},
+        {"name": "RDS_PORT", "value": "${RDS_PORT}"},
+        {"name": "ENVIRONMENT", "value": "${ENVIRONMENT}"},
+        {"name": "RDS_USERNAME", "value": "${RDS_USERNAME}"},
+        {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/${ECS_CLUSTER}",
+          "awslogs-create-group": "true",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    },
+    {
+      "name": "asai-rag",
+      "image": "${ECR_URL}/rag:latest",
+      "cpu": 1024,
+      "memory": 2048,
+      "memoryReservation": 2048,
+      "portMappings": [
+        {
+          "name": "asai-rag-8080-tcp",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {"name": "RDS_HOST", "value": "${RDS_HOST}"},
+        {"name": "RDS_DBNAME", "value": "${RDS_DBNAME}"},
+        {"name": "RDS_PASSWORD", "value": "${RDS_PASSWORD}"},
+        {"name": "PORT", "value": "8080"},
+        {"name": "RDS_PORT", "value": "${RDS_PORT}"},
+        {"name": "ENVIRONMENT", "value": "${ENVIRONMENT}"},
+        {"name": "RDS_USERNAME", "value": "${RDS_USERNAME}"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/${ECS_CLUSTER}",
+          "awslogs-create-group": "true",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "taskRoleArn": "${AWS_ROLE_ARN}",
+  "executionRoleArn": "${AWS_ROLE_ARN}",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "2048",
+  "memory": "4096",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}

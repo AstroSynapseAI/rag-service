@@ -1,0 +1,69 @@
+name: Deploy to Amazon ECS
+on:
+  push:
+    branches:
+      - deploy-asai-dev
+      - deploy-mar-mar-dev
+env:
+  ECS_TASK_DEFINITION: .github/workflows/task-definition.json
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+          
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+        
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: asai-app
+        image: ${{ secrets.ECR_URL }}/asai:${{ github.sha }}
+
+    - name: Update task definition
+      run: |
+        jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/rag:${{ github.sha }}" |
+        .containerDefinitions[].environment = [
+          {"name": "RDS_HOST", "value": "${{ secrets.RDS_HOST }}"},
+          {"name": "RDS_DBNAME", "value": "${{ secrets.RDS_DBNAME }}"},
+          {"name": "RDS_USERNAME", "value": "${{ secrets.RDS_USERNAME }}"},
+          {"name": "RDS_PASSWORD", "value": "${{ secrets.RDS_PASSWORD }}"},
+          {"name": "RDS_PORT", "value": "${{ secrets.RDS_PORT }}"},
+          {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"}
+        ]' ${{ steps.task-def.outputs.task-definition }} > ${{ steps.task-def.outputs.task-definition }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ secrets.ECS_SERVICE }}
+        cluster: ${{ secrets.ECS_CLUSTER }}
+        wait-for-service-stability: true
