@@ -56,6 +56,8 @@ jobs:
       run: |
         jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/rag:${{ github.sha }}" |
         .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/asai:latest" |
+        .containerDefinitions[0].environment += [{"name": "PORT", "value": "80"}] |
+        .containerDefinitions[1].environment += [{"name": "PORT", "value": "8080"}] |
         .containerDefinitions[].environment = [
           {"name": "RDS_HOST", "value": "${{ secrets.RDS_HOST }}"},
           {"name": "RDS_DBNAME", "value": "${{ secrets.RDS_DBNAME }}"},
