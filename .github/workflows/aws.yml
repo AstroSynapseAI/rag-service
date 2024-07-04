@@ -30,32 +30,23 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
         
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Build, and push image to registry
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_TAG: latest
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f deploys/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-        
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: asai-app
-        image: ${{ secrets.ECR_URL }}/asai:${{ github.sha }}
-        
-    - name: Extract task family name
-      run: echo "TASK_FAMILY=$(jq -r '.family' ${{ env.ECS_TASK_DEFINITION }})" >> $GITHUB_ENV
 
-    - name: Update task definition
+    - name: Updatetask definition
+      id: update-task-def
       run: |
-        jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/rag:${{ github.sha }}" |
-        .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/asai:latest" |
+        jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/${{ env.ECR_REPOSITORY }}:latest" |
+        .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/${{ env.ECR_APP_REPOSITORY }}:latest" |
+        .containerDefinitions[0].name = "${{ secrets.CONTAINER_NAME }}" |
         .containerDefinitions[0].environment += [{"name": "PORT", "value": "80"}] |
         .containerDefinitions[1].environment += [{"name": "PORT", "value": "8080"}] |
         .containerDefinitions[].environment += [
@@ -67,7 +58,7 @@ jobs:
           {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"},
           {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"}
         ] |
-        .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ env.TASK_FAMILY }}" |
+        .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ secrets.ECS_TASK_FAMILY }}" |
         .containerDefinitions[].logConfiguration.options."awslogs-region" = "${{ secrets.AWS_REGION }}" |
         .taskRoleArn = "${{ secrets.TASK_ROLE_ARN }}" |
         .executionRoleArn = "${{ secrets.TASK_ROLE_ARN }}"' ${{ steps.task-def.outputs.task-definition }} > temp.json && mv temp.json ${{ steps.task-def.outputs.task-definition }}

@@ -1,8 +1,8 @@
 {
-  "family": "BuildAsaiDev",
+  "family": "${ECS_TASK_FAMILY}",
   "containerDefinitions": [
     {
-      "name": "asai-app",
+      "name": "${CONTAINER_NAME}",
       "image": "${ECR_URL}/asai:latest",
       "cpu": 1024,
       "memory": 2048,
@@ -18,14 +18,38 @@
       ],
       "essential": true,
       "environment": [
-        {"name": "RDS_HOST", "value": "${RDS_HOST}"},
-        {"name": "RDS_DBNAME", "value": "${RDS_DBNAME}"},
-        {"name": "RDS_PASSWORD", "value": "${RDS_PASSWORD}"},
-        {"name": "PORT", "value": "80"},
-        {"name": "RDS_PORT", "value": "${RDS_PORT}"},
-        {"name": "ENVIRONMENT", "value": "${ENVIRONMENT}"},
-        {"name": "RDS_USERNAME", "value": "${RDS_USERNAME}"},
-        {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"}
+        {
+          "name": "RDS_HOST",
+          "value": "${RDS_HOST}"
+        },
+        {
+          "name": "RDS_DBNAME",
+          "value": "${RDS_DBNAME}"
+        },
+        {
+          "name": "RDS_PASSWORD",
+          "value": "${RDS_PASSWORD}"
+        },
+        {
+          "name": "PORT",
+          "value": "80"
+        },
+        {
+          "name": "RDS_PORT",
+          "value": "${RDS_PORT}"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "${ENVIRONMENT}"
+        },
+        {
+          "name": "RDS_USERNAME",
+          "value": "${RDS_USERNAME}"
+        },
+        {
+          "name": "RAG_SERVICE_URL",
+          "value": "ws://localhost:8080/ws/chat"
+        }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -54,13 +78,34 @@
       ],
       "essential": true,
       "environment": [
-        {"name": "RDS_HOST", "value": "${RDS_HOST}"},
-        {"name": "RDS_DBNAME", "value": "${RDS_DBNAME}"},
-        {"name": "RDS_PASSWORD", "value": "${RDS_PASSWORD}"},
-        {"name": "PORT", "value": "8080"},
-        {"name": "RDS_PORT", "value": "${RDS_PORT}"},
-        {"name": "ENVIRONMENT", "value": "${ENVIRONMENT}"},
-        {"name": "RDS_USERNAME", "value": "${RDS_USERNAME}"}
+        {
+          "name": "RDS_HOST",
+          "value": "${RDS_HOST}"
+        },
+        {
+          "name": "RDS_DBNAME",
+          "value": "${RDS_DBNAME}"
+        },
+        {
+          "name": "RDS_PASSWORD",
+          "value": "${RDS_PASSWORD}"
+        },
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "RDS_PORT",
+          "value": "${RDS_PORT}"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "${ENVIRONMENT}"
+        },
+        {
+          "name": "RDS_USERNAME",
+          "value": "${RDS_USERNAME}"
+        }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
