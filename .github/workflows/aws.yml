@@ -49,8 +49,8 @@ jobs:
         container-name: asai-app
         image: ${{ secrets.ECR_URL }}/asai:${{ github.sha }}
           
-    - name: Verify task definition file
-      run: cat ${{ steps.task-def.outputs.task-definition }}
+    # - name: Verify task definition file
+    #   run: cat ${{ steps.task-def.outputs.task-definition }}
         
     - name: Update task definition
       run: |
@@ -66,8 +66,11 @@ jobs:
           {"name": "AWS_REGION", "value": "${{ secrets.AWS_REGION }}"},
           {"name": "ECR_URL", "value": "${{ secrets.ECR_URL }}"},
           {"name": "ECS_CLUSTER", "value": "${{ secrets.ECS_CLUSTER }}"}
-        ]' ${{ steps.task-def.outputs.task-definition }} > temp.json && mv temp.json ${{ steps.task-def.outputs.task-definition }}
-        cat ${{ steps.task-def.outputs.task-definition }}
+        ] |
+        .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs${{ secrets.ECS_CLUSTER }}${{ secrets.ECS_SERVICE }}" |
+        .containerDefinitions[].logConfiguration.options."awslogs-region" = "${{ secrets.AWS_REGION }}" |
+        .taskRoleArn = "${{ secrets.TASK_ROLE_ARN }}" |
+        .executionRoleArn = "${{ secrets.TASK_ROLE_ARN }}"' ${{ steps.task-def.outputs.task-definition }} > temp.json && mv temp.json ${{ steps.task-def.outputs.task-definition }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
