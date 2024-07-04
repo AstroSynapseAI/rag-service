@@ -9,6 +9,7 @@ env:
 permissions:
   contents: read
   id-token: write
+    
 jobs:
   deploy:
     name: Deploy
@@ -57,7 +58,12 @@ jobs:
           {"name": "RDS_USERNAME", "value": "${{ secrets.RDS_USERNAME }}"},
           {"name": "RDS_PASSWORD", "value": "${{ secrets.RDS_PASSWORD }}"},
           {"name": "RDS_PORT", "value": "${{ secrets.RDS_PORT }}"},
-          {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"}
+          {"name": "TASK_ROLE_ARN", "value": "${{ secrets.TASK_ROLE_ARN }}"},
+          {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"},
+          {"name": "AWS_REGION", "value": "${{ secrets.AWS_REGION }}"},
+          {"name": "ECR_URL", "value": "${{ secrets.ECR_URL }}"},
+          {"name": "ECS_CLUSTER", "value": "${{ secrets.ECS_CLUSTER }}"},
+          
         ]' ${{ steps.task-def.outputs.task-definition }} > ${{ steps.task-def.outputs.task-definition }}
 
     - name: Deploy Amazon ECS task definition

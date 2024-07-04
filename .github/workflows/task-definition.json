@@ -73,8 +73,8 @@
       }
     }
   ],
-  "taskRoleArn": "${AWS_ROLE_ARN}",
-  "executionRoleArn": "${AWS_ROLE_ARN}",
+  "taskRoleArn": "${TASK_ROLE_ARN}",
+  "executionRoleArn": "${TASK_ROLE_ARN}",
   "networkMode": "awsvpc",
   "requiresCompatibilities": [
     "FARGATE"
