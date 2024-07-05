@@ -62,6 +62,7 @@ jobs:
         .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ secrets.ECS_TASK_FAMILY }}" |
         .containerDefinitions[].logConfiguration.options."awslogs-region" = "${{ secrets.AWS_REGION }}" |
         .taskRoleArn = "${{ secrets.TASK_ROLE_ARN }}" |
+        .family = "${{ secrets.ECS_TASK_FAMILY }}" |
         .executionRoleArn = "${{ secrets.TASK_ROLE_ARN }}"' ${{ env.ECS_TASK_DEFINITION }} > updated-task-def.json
         echo "task-definition=updated-task-def.json" >> $GITHUB_OUTPUT
 
