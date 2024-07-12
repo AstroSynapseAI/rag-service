@@ -36,7 +36,7 @@ func NewLoader(options ...DocuemntsToolOption) (*DocumentsTool, error) {
 }
 
 func (agent *DocumentsTool) Name() string {
-	return "Library Agent"
+	return "Library file loading tool"
 }
 
 func (agent *DocumentsTool) Description() string {

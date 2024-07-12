@@ -15,6 +15,7 @@ type ToolConfig interface {
 
 // Active Tool Config
 type ActiveTool struct {
+	Avatar     models.Avatar
 	activeTool models.ActiveTool
 }
 
@@ -23,6 +24,7 @@ var _ ToolConfig = (*ActiveTool)(nil)
 func NewActiveTool(avatar models.Avatar, tool models.ActiveTool) *ActiveTool {
 	return &ActiveTool{
 		activeTool: tool,
+		Avatar:     avatar,
 	}
 }
 

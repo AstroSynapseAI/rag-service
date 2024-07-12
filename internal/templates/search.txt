@@ -16,11 +16,11 @@ Observation: The result of the action
 ...(This Thought/Action/Action Input/Observation can repeat N times) 
 Thought: I now know the final answer
 Final Answer: 
-  Summary: [ Summarize the final answer here ]
+  Summary: [ Search Assistant should summarize the final answer here ]
   Most Relevant Links:
   - Link 1: Description of Link 1
   - Link N: Description of Link N
-  ...(Depending on relevance you can add none, or N number of Links)
+  ...(Depending on relevance Search Assistant can add none, or N number of Links)
 
 Begin!
 
