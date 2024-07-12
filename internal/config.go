@@ -9,6 +9,7 @@ import (
 	"github.com/AstroSynapseAI/rag-service/internal/agents"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/dnb"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/email"
+	"github.com/AstroSynapseAI/rag-service/internal/agents/library"
 	"github.com/AstroSynapseAI/rag-service/internal/agents/search"
 	"github.com/GoLangWebSDK/crud/database"
 	"github.com/tmc/langchaingo/llms"
@@ -151,6 +152,21 @@ func (cnf *Config) GetAgents() []tools.Tool {
 			}
 
 			loadedAgents = append(loadedAgents, dnbAgent)
+		}
+
+		if agent.GetAgentSlug() == "pdf-reader-agent" && agent.IsAgentActive() {
+
+			pdfAgent, err := library.NewPDFAgent(
+				library.WithModel(agent.GetAgentLLM()),
+				library.WithDocuments(agent.Avatar.Documents),
+			)
+
+			if err != nil {
+				fmt.Println("Error loading pdf agent:", err)
+				return nil
+			}
+
+			loadedAgents = append(loadedAgents, pdfAgent)
 		}
 	}
 	return loadedAgents
