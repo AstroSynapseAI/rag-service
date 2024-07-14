@@ -5,28 +5,26 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"os"
 	"regexp"
 
 	"github.com/AstroSynapseAI/asai-service/models"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/AstroSynapseAI/rag-service/utils/storage"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/documentloaders"
 	"github.com/tmc/langchaingo/embeddings"
 	"github.com/tmc/langchaingo/llms"
+	"github.com/tmc/langchaingo/schema"
 	"github.com/tmc/langchaingo/textsplitter"
+	"github.com/tmc/langchaingo/vectorstores"
+	"github.com/tmc/langchaingo/vectorstores/pinecone"
 )
 
 type PDFAgent struct {
-	File       *bytes.Reader
-	Splitter   textsplitter.RecursiveCharacter
-	Embedder   embeddings.Embedder
-	Model      llms.Model
-	avatarDocs []models.Document
+	Splitter textsplitter.RecursiveCharacter
+	Embedder embeddings.Embedder
+	Model    llms.Model
+	Docs     []models.Document
+	Storage  *storage.AWS
 }
 
 func NewPDFAgent(options ...PDFAgentOptions) (*PDFAgent, error) {
@@ -35,6 +33,8 @@ func NewPDFAgent(options ...PDFAgentOptions) (*PDFAgent, error) {
 	pdfAgent.Splitter = textsplitter.NewRecursiveCharacter()
 	pdfAgent.Splitter.ChunkSize = 500
 	pdfAgent.Splitter.ChunkOverlap = 50
+
+	pdfAgent.Storage = storage.NewAWSStorage()
 
 	return pdfAgent, nil
 }
@@ -46,7 +46,7 @@ func (agent *PDFAgent) Name() string {
 func (agent *PDFAgent) Description() string {
 	str := "Enables your avatar to read PDF files. \n\n Avaliable files: \n"
 
-	for _, doc := range agent.avatarDocs {
+	for _, doc := range agent.Docs {
 		str += str + "- " + doc.Name + "\n"
 	}
 
@@ -77,115 +77,57 @@ func (agent *PDFAgent) Call(ctx context.Context, input string) (string, error) {
 		return fmt.Sprintf("%v: %s", "invalid input", err), nil
 	}
 
-	err = agent.loadFile(toolInput.File)
+	fileByte, err := agent.Storage.GetFile(toolInput.File)
 	if err != nil {
 		return "", err
 	}
 
-	PDFLoader := documentloaders.NewPDF(agent.File, agent.File.Size())
-
+	file := bytes.NewReader(fileByte)
+	PDFLoader := documentloaders.NewPDF(file, file.Size())
 	docs, err := PDFLoader.LoadAndSplit(ctx, agent.Splitter)
 	if err != nil {
 		return "", err
 	}
 
-	// store, err := pinecone.New(
-	// 	pinecone.WithNameSpace("asai"),
-	// 	pinecone.WithEmbedder(agent.Embedder),
-	// )
-	//
-	// if err != nil {
-	// 	return "", err
-	// }
-	//
-	// _, err = store.AddDocuments(ctx, docs)
-	// if err != nil {
-	// 	return "", err
-	// }
-	//
-	// docs, err = store.SimilaritySearch(
-	// 	ctx,
-	// 	input,
-	// 	1,
-	// 	vectorstores.WithScoreThreshold(0.5),
-	// )
-	//
-	// if err != nil {
-	// 	return "", err
-	// }
-
 	QAChain := chains.LoadStuffQA(agent.Model)
-
 	answer, err := chains.Call(ctx, QAChain, map[string]any{
 		"input_documents": docs,
 		"question":        input,
 	})
-
 	if err != nil {
 		return "", err
 	}
 
 	response := answer["text"].(string)
-
 	return response, nil
 }
 
-func (agent *PDFAgent) loadFile(file string) error {
-	var loadedDoc models.Document
+func (agent *PDFAgent) search(ctx context.Context, docs []schema.Document, input string) ([]schema.Document, error) {
 
-	for _, doc := range agent.avatarDocs {
-		if doc.Name == file {
-			loadedDoc = doc
-			break
-		}
-	}
+	store, err := pinecone.New(
+		pinecone.WithNameSpace("asai"),
+		pinecone.WithEmbedder(agent.Embedder),
+	)
 
-	if loadedDoc.Name == "" {
-		return fmt.Errorf("file not found: %s", file)
-	}
-
-	sess, err := session.NewSession(agent.createAWSSession())
 	if err != nil {
-		return fmt.Errorf("error creating AWS session: %w", err)
+		return nil, err
 	}
 
-	svc := s3.New(sess)
-
-	result, err := svc.GetObject(&s3.GetObjectInput{
-		Bucket: aws.String("mar-mar"),
-		Key:    aws.String(loadedDoc.Name),
-	})
+	_, err = store.AddDocuments(ctx, docs)
 	if err != nil {
-		return fmt.Errorf("error getting object from S3: %w", err)
+		return nil, err
 	}
-	defer result.Body.Close()
 
-	// Read the entire content into a byte slice
-	content, err := io.ReadAll(result.Body)
+	docs, err = store.SimilaritySearch(
+		ctx,
+		input,
+		1,
+		vectorstores.WithScoreThreshold(0.5),
+	)
+
 	if err != nil {
-		return fmt.Errorf("error reading S3 object: %w", err)
+		return nil, err
 	}
 
-	// Create a *bytes.Reader from the content
-	agent.File = bytes.NewReader(content)
-
-	return nil
-}
-
-func (agent *PDFAgent) createAWSSession() *aws.Config {
-
-	if os.Getenv("ENVIRONMENT") == "LOCAL DEV" {
-		return &aws.Config{
-			Region: aws.String("eu-central-1"),
-			Credentials: credentials.NewStaticCredentials(
-				os.Getenv("ACCESS_KEY"),
-				os.Getenv("SECRET_KEY"),
-				"",
-			),
-		}
-	}
-
-	return &aws.Config{
-		Region: aws.String("eu-central-1"),
-	}
+	return docs, nil
 }

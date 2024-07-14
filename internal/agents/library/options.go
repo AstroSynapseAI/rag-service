@@ -42,6 +42,6 @@ func WithModel(model llms.Model) PDFAgentOptions {
 
 func WithDocuments(docs []models.Document) PDFAgentOptions {
 	return func(agent *PDFAgent) {
-		agent.avatarDocs = docs
+		agent.Docs = docs
 	}
 }
