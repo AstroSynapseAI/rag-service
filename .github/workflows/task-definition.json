@@ -119,7 +119,7 @@
     }
   ],
   "taskRoleArn": "${TASK_ROLE_ARN}",
-  "executionRoleArn": "${TASK_ROLE_ARN}",
+  "executionRoleArn": "${EXEC_ROLE_ARN}",
   "networkMode": "awsvpc",
   "requiresCompatibilities": [
     "FARGATE"
