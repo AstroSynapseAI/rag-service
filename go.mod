@@ -5,6 +5,7 @@ go 1.22.0
 require (
 	github.com/AstroSynapseAI/asai-service v0.0.0-20240622123930-75bc9a2d2ba8
 	github.com/GoLangWebSDK/crud v0.0.0-20240620121149-1055a55efd25
+	github.com/aws/aws-sdk-go v1.54.19
 	github.com/gocolly/colly v1.2.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
@@ -48,6 +49,7 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect

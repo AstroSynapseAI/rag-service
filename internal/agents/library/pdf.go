@@ -30,6 +30,10 @@ type PDFAgent struct {
 func NewPDFAgent(options ...PDFAgentOptions) (*PDFAgent, error) {
 	pdfAgent := &PDFAgent{}
 
+	for _, option := range options {
+		option(pdfAgent)
+	}
+
 	pdfAgent.Splitter = textsplitter.NewRecursiveCharacter()
 	pdfAgent.Splitter.ChunkSize = 500
 	pdfAgent.Splitter.ChunkOverlap = 50
@@ -44,18 +48,25 @@ func (agent *PDFAgent) Name() string {
 }
 
 func (agent *PDFAgent) Description() string {
-	str := "Enables your avatar to read PDF files. \n\n Avaliable files: \n"
+	str := `Enables your avatar to read PDF files. 
+	
+	The tool exepects input in JSON format with search query and filename.
 
-	for _, doc := range agent.Docs {
-		str += str + "- " + doc.Name + "\n"
-	}
-
-	str += `The tool exepects input in JSON format with search query and filename.\n
+	Example:
 	{
 		"query": "Where did Simun work in 2015?",
 		"file": "SimunStukanCV.pdf"
-	}\n
+	}
+
+	Available documents:
+	
 	`
+	var docStr string
+	for _, doc := range agent.Docs {
+		docStr += "- " + doc.Name + "\n"
+	}
+
+	str += docStr
 
 	return str
 }

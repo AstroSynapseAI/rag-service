@@ -9,7 +9,7 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/AstroSynapseAI/mar-mar-service/models"
+	"github.com/AstroSynapseAI/asai-service/models"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"

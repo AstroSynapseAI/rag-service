@@ -1,7 +1,7 @@
 package documents
 
 import (
-	"github.com/AstroSynapseAI/mar-mar-service/models"
+	"github.com/AstroSynapseAI/asai-service/models"
 	"github.com/tmc/langchaingo/embeddings"
 	"github.com/tmc/langchaingo/llms"
 )

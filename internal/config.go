@@ -154,8 +154,7 @@ func (cnf *Config) GetAgents() []tools.Tool {
 			loadedAgents = append(loadedAgents, dnbAgent)
 		}
 
-		if agent.GetAgentSlug() == "pdf-reader-agent" && agent.IsAgentActive() {
-
+		if agent.GetAgentSlug() == "library-agent" && agent.IsAgentActive() {
 			pdfAgent, err := library.NewPDFAgent(
 				library.WithModel(agent.GetAgentLLM()),
 				library.WithDocuments(agent.Avatar.Documents),
