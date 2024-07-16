@@ -39,33 +39,38 @@ func NewClient(conn *websocket.Conn, manager *Manager) *Client {
 
 func (client *Client) MaintainConnection(ctx context.Context) {
 	ticker := time.NewTicker(pingInterval)
+	defer ticker.Stop()
 
 	if err := client.connection.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		log.Println("Failed to set read deadline:", err)
 		return
 	}
-
 	client.connection.SetPongHandler(client.PongHandler)
 
 	for {
-		// fmt.Println("Ping...")
-		err := client.connection.WriteMessage(websocket.PingMessage, []byte{})
-		if err != nil {
-			fmt.Println("Ping failed:", err)
+		select {
+		case <-ticker.C:
+			err := client.connection.WriteMessage(websocket.PingMessage, []byte{})
+			if err != nil {
+				fmt.Println("Ping failed:", err)
+				return
+			}
+			// fmt.Println("Ping sent successfully")
+		case <-ctx.Done():
+			fmt.Println("Context cancelled, stopping MaintainConnection")
 			return
 		}
-		// Wait for next tick
-		<-ticker.C
 	}
 }
 
 func (client *Client) PongHandler(pongMsg string) error {
-	// fmt.Println("Pong!")
 	err := client.connection.SetReadDeadline(time.Now().Add(pongWait))
 	if err != nil {
 		fmt.Println("Failed to set read deadline in pong handler:", err)
 		return err
 	}
+
+	fmt.Println("Pong received successfully")
 
 	return nil
 }
