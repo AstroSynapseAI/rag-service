@@ -70,7 +70,7 @@ func (client *Client) PongHandler(pongMsg string) error {
 		return err
 	}
 
-	fmt.Println("Pong received successfully")
+	// fmt.Println("Pong received successfully")
 
 	return nil
 }
