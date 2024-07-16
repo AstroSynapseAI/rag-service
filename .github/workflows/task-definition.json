@@ -79,6 +79,10 @@
       "essential": true,
       "environment": [
         {
+          "name": "AWS_BUCKET",
+          "value": "${AWS_BUCKET}"
+        },
+        {
           "name": "RDS_HOST",
           "value": "${RDS_HOST}"
         },

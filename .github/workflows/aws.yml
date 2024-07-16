@@ -51,6 +51,7 @@ jobs:
         .containerDefinitions[0].environment += [{"name": "PORT", "value": "80"}] |
         .containerDefinitions[1].environment += [{"name": "PORT", "value": "8080"}] |
         .containerDefinitions[].environment += [
+          {"name": "AWS_BUCKET", "value": "${{ secrets.AWS_BUCKET}}"},
           {"name": "RDS_HOST", "value": "${{ secrets.RDS_HOST }}"},
           {"name": "RDS_DBNAME", "value": "${{ secrets.RDS_DBNAME }}"},
           {"name": "RDS_USERNAME", "value": "${{ secrets.RDS_USERNAME }}"},
