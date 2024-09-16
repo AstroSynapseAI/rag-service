@@ -44,13 +44,17 @@ jobs:
     - name: Configure task definition
       id: task-def
       run: |
-        jq '.containerDefinitions[1].image = "${{ secrets.ECR_URL }}/${{ secrets.ECR_REPOSITORY }}:latest" |
+        ESCAPED_GCJ=$(echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' | jq -R -s '.')
+        jq --arg gcj "$ESCAPED_GCJ" '
+        .containerDefinitions[1].image = "${{ secrets.ECR_URL }}/${{ secrets.ECR_RAG_REPOSITORY }}:latest" |
         .containerDefinitions[0].image = "${{ secrets.ECR_URL }}/${{ secrets.ECR_APP_REPOSITORY }}:latest" |
         .containerDefinitions[0].name = "${{ secrets.APP_CONTAINER_NAME }}" |
-        .containerDefinitions[1].name = "${{ secrets.CONTAINER_NAME }}" |
+        .containerDefinitions[1].name = "${{ secrets.RAG_CONTAINER_NAME }}" |
         .containerDefinitions[0].environment += [{"name": "PORT", "value": "80"}] |
         .containerDefinitions[1].environment += [{"name": "PORT", "value": "8080"}] |
         .containerDefinitions[].environment += [
+          {"name": "GOOGLE_PROJECT_ID", "value": "${{ secrets.GOOGLE_PROJECT_ID}}"},
+          {"name": "GOOGLE_CREDENTIALS_JSON", "value": ($gcj | fromjson)},
           {"name": "AWS_BUCKET", "value": "${{ secrets.AWS_BUCKET}}"},
           {"name": "RDS_HOST", "value": "${{ secrets.RDS_HOST }}"},
           {"name": "RDS_DBNAME", "value": "${{ secrets.RDS_DBNAME }}"},
@@ -58,7 +62,8 @@ jobs:
           {"name": "RDS_PASSWORD", "value": "${{ secrets.RDS_PASSWORD }}"},
           {"name": "RDS_PORT", "value": "${{ secrets.RDS_PORT }}"},
           {"name": "RAG_SERVICE_URL", "value": "ws://localhost:8080/ws/chat"},
-          {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"}
+          {"name": "ENVIRONMENT", "value": "${{ secrets.ENVIRONMENT }}"},
+          {"name": "TASK_ROLE_ARN", "value": "${{ secrets.TASK_ROLE_ARN }}"}
         ] |
         .containerDefinitions[].logConfiguration.options."awslogs-group" = "/ecs/${{ secrets.ECS_TASK_FAMILY }}" |
         .containerDefinitions[].logConfiguration.options."awslogs-region" = "${{ secrets.AWS_REGION }}" |

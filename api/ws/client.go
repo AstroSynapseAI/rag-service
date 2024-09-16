@@ -95,6 +95,8 @@ func (client *Client) ReadMsgs(ctx context.Context) {
 			UserPrompt string `json:"user_prompt"`
 		}
 
+		fmt.Println(string(payload))
+
 		if err = json.Unmarshal(payload, &request); err != nil {
 			fmt.Println("error marshalling message: ", err)
 			break

@@ -19,6 +19,14 @@
       "essential": true,
       "environment": [
         {
+          "name": "GOOGLE_PROJECT_ID",
+          "value": "${GOOGLE_PROJECT_ID}"
+        },
+        {
+          "name": "GOOGLE_CREDENTIALS_JSON",
+          "value": "${GOOGLE_CREDENTIALS_JSON}"
+        },
+        {
           "name": "RDS_HOST",
           "value": "${RDS_HOST}"
         },
@@ -49,6 +57,10 @@
         {
           "name": "RAG_SERVICE_URL",
           "value": "ws://localhost:8080/ws/chat"
+        },
+        {
+          "name": "TASK_ROLE_ARN",
+          "value": "${TASK_ROLE_ARN}"
         }
       ],
       "logConfiguration": {
